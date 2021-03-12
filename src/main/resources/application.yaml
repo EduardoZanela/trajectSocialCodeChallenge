@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: trajectSocialCodeChallenge
+  main:
+    allow-bean-definition-overriding: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: example
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+server:
+  port: 8080
