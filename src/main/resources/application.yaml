@@ -24,3 +24,7 @@ client:
   bitly:
     url: https://api-ssl.bitly.com/v4
     token: 6041d27f3348ee0cefb423b6b53ae1629c5349a1
+
+webscraper:
+  timeout: 10000
+  searchtags: h1,h2,h3

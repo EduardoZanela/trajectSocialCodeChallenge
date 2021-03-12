@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eduardozanela.trajectSocialCodeChanllenge.client.BitLyClient;
+import com.eduardozanela.trajectSocialCodeChanllenge.config.RabbitMqConstants;
 import com.eduardozanela.trajectSocialCodeChanllenge.dto.BitLyRequest;
 import com.eduardozanela.trajectSocialCodeChanllenge.dto.UserProfileDTO;
 import com.eduardozanela.trajectSocialCodeChanllenge.entity.UserProfile;
@@ -27,11 +29,15 @@ public class UserProfileServiceImpl implements UserProfileService {
 	@Autowired
 	private BitLyClient client;
 	
+	@Autowired
+	private RabbitTemplate rabbitTemplate;
+	
 	@Override
 	public UserProfile createUser(UserProfileDTO dto) {
 		UserProfile userProfile = modelMapper.map(dto, UserProfile.class);
 		userProfile.setShortenedUrl(client.shortUrl(new BitLyRequest(userProfile.getUrl())).getLink());
 		userProfile = repository.save(userProfile);
+		rabbitTemplate.convertAndSend(RabbitMqConstants.PROCESS_WEB_SCRAPER_EXCHANGE, RabbitMqConstants.PROCESS_WEB_SCRAPER_KEY, dto);	
 		return userProfile;
 	}
 

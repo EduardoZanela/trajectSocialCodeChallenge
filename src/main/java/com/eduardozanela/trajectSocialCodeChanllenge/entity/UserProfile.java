@@ -4,13 +4,16 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -47,4 +50,7 @@ public class UserProfile implements Serializable{
 	@JsonIgnoreProperties({"friends"})
 	private Set<UserProfile> friends = new HashSet<>();
 	
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER, mappedBy = "user")
+	@JsonIgnoreProperties({"user"})
+	private Set<UserProfileHeadings> headings = new HashSet<>();
 }
