@@ -1,9 +1,14 @@
 package com.eduardozanela.trajectSocialCodeChanllenge.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.eduardozanela.trajectSocialCodeChanllenge.entity.UserProfile;
 
-public interface UserProfileRepository extends CrudRepository<UserProfile, Long>{
-
+@Repository
+public interface UserProfileRepository extends JpaRepository<UserProfile, Long>{
+	
+	public Optional<UserProfile> findByUsername(String username);
 }
