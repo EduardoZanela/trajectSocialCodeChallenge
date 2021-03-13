@@ -1,26 +1,30 @@
 package com.eduardozanela.trajectSocialCodeChanllenge.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.eduardozanela.trajectSocialCodeChanllenge.dto.UserProfileDTO;
 import com.eduardozanela.trajectSocialCodeChanllenge.entity.UserProfile;
 import com.eduardozanela.trajectSocialCodeChanllenge.service.UserProfileService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping("/v1/users")
 public class UserProfileController {
 
 	@Autowired
+	
 	private UserProfileService service;
+	
+	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<UserProfile>> getAllUser() throws Exception {
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(service.getAllUsers());
+	}
 	
 	@GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserProfile> getUser(@PathVariable("username") String username) throws Exception {

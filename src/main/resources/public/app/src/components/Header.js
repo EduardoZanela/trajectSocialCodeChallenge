@@ -1,4 +1,5 @@
 import './Header.css'
+import { Link } from 'react-router-dom';
 
 function Header() {
   
@@ -10,6 +11,7 @@ function Header() {
       <p>
         A simple tool for friends interesting topics.
       </p>
+      <Link className="item-link" to="/" >Home</Link>
     </div>
   )
 }

@@ -1,0 +1,40 @@
+.container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: auto;
+}
+
+.details-friends{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin: 0px;
+}
+
+.subtitle{
+  margin-top: 60px;
+}
+
+.item-first{
+  height: auto;
+  cursor: auto;
+}
+
+.item-heading {
+  margin-top: 5px;
+  background: #0077ff33;
+  color: #0077ff;
+  font-weight: 700;
+  border-radius: 6px;
+  font-size: 0.8em;
+  padding: 6px;
+  bottom: 8px;
+  left: 8px;
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
