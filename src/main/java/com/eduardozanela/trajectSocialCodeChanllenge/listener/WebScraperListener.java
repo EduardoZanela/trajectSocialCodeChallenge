@@ -1,4 +1,4 @@
-package com.eduardozanela.trajectSocialCodeChanllenge;
+package com.eduardozanela.trajectSocialCodeChanllenge.listener;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,7 +17,7 @@ import com.eduardozanela.trajectSocialCodeChanllenge.repository.UserProfileRepos
 import com.eduardozanela.trajectSocialCodeChanllenge.service.impl.WebScraperHelper;
 
 @Component
-public class WebScraperListner {
+public class WebScraperListener {
 	
 	@Autowired
 	private WebScraperHelper webScraperHelper;

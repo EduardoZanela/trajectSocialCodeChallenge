@@ -1,6 +1,7 @@
 package com.eduardozanela.trajectSocialCodeChanllenge.service.impl;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -61,6 +62,11 @@ public class UserProfileServiceImpl implements UserProfileService {
 	@Override
 	public UserProfile getUser(String username) {
 		return repository.findByUsername(username).get();
+	}
+	
+	@Override
+	public List<UserProfile> getAllUsers() {
+		return repository.findAll();
 	}
 
 }
