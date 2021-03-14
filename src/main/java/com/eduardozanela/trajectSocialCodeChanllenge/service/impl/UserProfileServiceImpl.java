@@ -1,9 +1,11 @@
 package com.eduardozanela.trajectSocialCodeChanllenge.service.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.eduardozanela.trajectSocialCodeChanllenge.dto.FriendPath;
+import com.eduardozanela.trajectSocialCodeChanllenge.entity.UserProfileHeadings;
+import com.eduardozanela.trajectSocialCodeChanllenge.repository.UserHeadingsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 	
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
+
+	@Autowired
+	private UserHeadingsRepository headingsRepository;
 	
 	@Override
 	public UserProfile createUser(UserProfileDTO dto) {
@@ -44,19 +49,12 @@ public class UserProfileServiceImpl implements UserProfileService {
 
 	@Override
 	public UserProfile addFriend(String username, String friendUsername) {
-		Optional<UserProfile> friend = repository.findByUsername(friendUsername);
-		Optional<UserProfile> user = repository.findByUsername(username);
-		
-		if(friend.isEmpty() || user.isEmpty()) {
-			throw new UserNotFoundException();
-		}
-		
-		user.get().getFriends().add(friend.get());
-		friend.get().getFriends().add(user.get());
-		
-		repository.saveAll(Arrays.asList(friend.get(), user.get()));
-		
-		return user.get();
+		UserProfile friend = repository.findByUsername(friendUsername).orElseThrow(UserNotFoundException::new);
+		UserProfile user = repository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+		user.getFriends().add(friend);
+		friend.getFriends().add(user);
+		repository.saveAll(Arrays.asList(friend, user));
+		return user;
 	}
 
 	@Override
@@ -69,4 +67,41 @@ public class UserProfileServiceImpl implements UserProfileService {
 		return repository.findAll();
 	}
 
+	@Override
+	public List<FriendPath> findFriends(String username, String heading) throws UserNotFoundException{
+		UserProfile user = repository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+		List<UserProfileHeadings> headings = headingsRepository.findHeadings(heading.toLowerCase(), user.getId());
+		Set<UserProfile> collect = headings.stream().map(UserProfileHeadings::getUser).collect(Collectors.toSet());
+		List<FriendPath> response = new ArrayList<>();
+		for (UserProfile prof : collect){
+			FriendPath friendPath = checkFriendsCircle(user, prof, prof);
+			if(!Objects.isNull(friendPath.getNext())){
+				response.add(friendPath);
+			}
+		}
+		return response;
+	}
+
+	private FriendPath checkFriendsCircle(UserProfile user, UserProfile childUser, UserProfile fatherUser) {
+		FriendPath friendPath = new FriendPath();
+		friendPath.setUser(childUser);
+
+		Set<UserProfile> filteredFriends = childUser.getFriends().stream().filter(a -> !a.equals(fatherUser)).collect(Collectors.toSet());
+		for (UserProfile userProfile : filteredFriends) {
+
+			if(user.getFriends().stream().anyMatch(a -> a.getId().equals(userProfile.getId()))){
+				friendPath.setNext(new FriendPath(userProfile, new FriendPath(user)));
+				return friendPath;
+			}
+
+			FriendPath circleFriendPath = checkFriendsCircle(user, userProfile, childUser);
+			if(circleFriendPath.getNext() != null) {
+				friendPath.setNext(circleFriendPath);
+				return friendPath;
+			}
+		}
+		return friendPath;
+	}
+	//Gabriel Dias -> Diego Santos -> Fernando Zanela -> Eduardo Zanela
+	//Fernando Zanela -> Robert Half -> John Chan
 }

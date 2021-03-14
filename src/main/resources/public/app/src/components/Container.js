@@ -7,7 +7,6 @@ import './Container.css'
 
 function Container() {
   const [users, setUsers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   
   useEffect(() => {
@@ -21,15 +20,27 @@ function Container() {
     }
   }
 
-  const onChange = val => {
-    setSearchQuery(val.toLowerCase()); 
+  const findUsers = async (val) => {
+    if(val) {
+      let res = await Api.findUsers('eduardozanela', val);
+      if(res){
+        setFilteredUsers(res);
+        return;
+      }
+    }
+    setFilteredUsers([]);
+  }
 
+  const onChange = (val, key) => {
+    if (key === 'Enter') {
+      findUsers(val);
+    }
   }
   return (
     <div className="container">
       <Header />
       <Search onChange={onChange} />
-      <Results users={users} />
+      <Results users={filteredUsers.length > 0 ? filteredUsers : users} />
     </div>
   )
 }

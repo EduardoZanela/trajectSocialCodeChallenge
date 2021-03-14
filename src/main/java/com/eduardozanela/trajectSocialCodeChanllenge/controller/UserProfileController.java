@@ -2,6 +2,7 @@ package com.eduardozanela.trajectSocialCodeChanllenge.controller;
 
 import java.util.List;
 
+import com.eduardozanela.trajectSocialCodeChanllenge.dto.FriendPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,6 +40,11 @@ public class UserProfileController {
 	@PostMapping(value = "/{username}/{friendusername}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserProfile> addfriend(@PathVariable("username") String username, @PathVariable("friendusername") String friendUsername) throws Exception {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(service.addFriend(username, friendUsername));
+	}
+
+	@GetMapping(value = "{username}/find/{heading}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<FriendPath>> findFriends(@PathVariable("username") String username, @PathVariable("heading") String heading) throws Exception {
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(service.findFriends(username, heading));
 	}
 	
 }
