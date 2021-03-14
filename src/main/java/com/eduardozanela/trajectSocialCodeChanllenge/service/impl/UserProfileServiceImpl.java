@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.eduardozanela.trajectSocialCodeChanllenge.dto.FriendPath;
 import com.eduardozanela.trajectSocialCodeChanllenge.entity.UserProfileHeadings;
 import com.eduardozanela.trajectSocialCodeChanllenge.repository.UserHeadingsRepository;
+import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 		Set<UserProfile> collect = headings.stream().map(UserProfileHeadings::getUser).collect(Collectors.toSet());
 		List<FriendPath> response = new ArrayList<>();
 		for (UserProfile prof : collect){
-			FriendPath friendPath = checkFriendsCircle(user, prof, prof);
+			Set<UserProfile> forSearch = new HashSet<>();
+			forSearch.add(prof);
+			FriendPath friendPath = checkFriendsCircle(user, prof, forSearch);
 			if(!Objects.isNull(friendPath.getNext())){
 				response.add(friendPath);
 			}
@@ -82,19 +85,24 @@ public class UserProfileServiceImpl implements UserProfileService {
 		return response;
 	}
 
-	private FriendPath checkFriendsCircle(UserProfile user, UserProfile childUser, UserProfile fatherUser) {
+	private FriendPath checkFriendsCircle(UserProfile user, UserProfile childUser, Set<UserProfile> searchedUsers) {
 		FriendPath friendPath = new FriendPath();
 		friendPath.setUser(childUser);
 
-		Set<UserProfile> filteredFriends = childUser.getFriends().stream().filter(a -> !a.equals(fatherUser)).collect(Collectors.toSet());
+		Set<UserProfile> filteredFriends = childUser
+				.getFriends()
+				.stream()
+				.filter(friend -> !searchedUsers.contains(friend))
+				.collect(Collectors.toSet());
+
 		for (UserProfile userProfile : filteredFriends) {
 
 			if(user.getFriends().stream().anyMatch(a -> a.getId().equals(userProfile.getId()))){
 				friendPath.setNext(new FriendPath(userProfile, new FriendPath(user)));
 				return friendPath;
 			}
-
-			FriendPath circleFriendPath = checkFriendsCircle(user, userProfile, childUser);
+			searchedUsers.add(childUser);
+			FriendPath circleFriendPath = checkFriendsCircle(user, userProfile, searchedUsers);
 			if(circleFriendPath.getNext() != null) {
 				friendPath.setNext(circleFriendPath);
 				return friendPath;
