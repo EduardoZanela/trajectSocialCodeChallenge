@@ -29,7 +29,7 @@ public class WebScraperListener {
 	private UserHeadingsRepository headingsRepository;
 
 	@RabbitListener(queues = RabbitMqConstants.PROCESS_WEB_SCRAPER_QUEUE)
-	public void processSubscriptionListener(UserProfileDTO message) {
+	public void processHeadingsListener(UserProfileDTO message) {
 		try {
 			Optional<UserProfile> user = repository.findByUsername(message.getUsername());
 			if(user.isPresent()) {
