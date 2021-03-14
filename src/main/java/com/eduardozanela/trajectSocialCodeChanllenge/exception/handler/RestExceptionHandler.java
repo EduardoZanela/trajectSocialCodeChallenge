@@ -15,14 +15,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.toString());
         request.getDescription(false);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public final ResponseEntity<Object> handleUserNotFoundException(Exception ex, WebRequest request) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("User not found");
+        ExceptionResponse exceptionResponse = new ExceptionResponse("User not found", HttpStatus.NOT_FOUND.toString());
         request.getDescription(false);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
