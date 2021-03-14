@@ -29,6 +29,7 @@
   transition: opacity 0.3s;
   cursor: pointer;
   text-decoration: none;
+  margin-right: 5px;
 }
 
 .item:hover{

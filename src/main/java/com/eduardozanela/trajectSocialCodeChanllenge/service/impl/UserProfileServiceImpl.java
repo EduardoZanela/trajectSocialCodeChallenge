@@ -102,6 +102,4 @@ public class UserProfileServiceImpl implements UserProfileService {
 		}
 		return friendPath;
 	}
-	//Gabriel Dias -> Diego Santos -> Fernando Zanela -> Eduardo Zanela
-	//Fernando Zanela -> Robert Half -> John Chan
 }

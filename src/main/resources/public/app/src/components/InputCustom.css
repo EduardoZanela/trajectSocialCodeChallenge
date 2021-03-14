@@ -1,4 +1,4 @@
-.search{
+.input-custom{
     background: white;
     padding: 14px 22px;
     width: 100%;
@@ -13,17 +13,18 @@
     transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
     cursor: pointer;
     box-sizing: border-box;
+    margin-bottom: 5px;
   }
   
-  .search::placeholder{
+  .input-custom::placeholder{
     color: #aaa;
   }
   
-  .search:hover{
+  .input-custom:hover{
     background: #f6f6f6;
   }
   
-  .search:focus{
+  .input-custom:focus{
     box-shadow: -3px -3px 6px #ffffff66, 3px 3px 6px #152b470c, 0 0 0 3px #0077ff49;
     border-color: transparent;
     cursor: text;

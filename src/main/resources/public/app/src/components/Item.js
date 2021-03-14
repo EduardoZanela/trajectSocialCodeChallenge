@@ -6,8 +6,8 @@ function Item(props) {
 
   const history = useHistory();
 
-  const handleClick = e => {
-    history.push("/"+props.data.username);
+  const handleNavigate = e => {
+    history.push("/details/"+props.data.username);
   }
 
   return (
@@ -15,7 +15,7 @@ function Item(props) {
       key={props.id}
       className="item"
       title={props.data.name}
-      onClick={handleClick} >
+      onClick={handleNavigate} >
       <span className="item-name">{props.data.name}</span>
       <span className="item-friends">{props.data.friends ? 'Number of friends:' + props.data.friends.length
         : ''}

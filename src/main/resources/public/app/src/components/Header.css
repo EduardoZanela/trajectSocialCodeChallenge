@@ -1,5 +1,21 @@
 .header{
-    text-align: center;
-    margin: 30px 0px;
-    line-height: 1.4em;
-  }
+  text-align: center;
+  margin: 30px 0px;
+  line-height: 1.4em;
+}
+
+.item-link{
+  margin-top: 5px;
+  background: #ff004c33;
+  color: #ff004c;
+  font-weight: 700;
+  border-radius: 6px;
+  font-size: 1.0em;
+  padding: 6px;
+  bottom: 8px;
+  left: 8px;
+  transition: opacity 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 5px;
+}
