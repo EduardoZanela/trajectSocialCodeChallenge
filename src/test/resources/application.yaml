@@ -25,7 +25,7 @@ server:
   
 client:
   bitly:
-    url: https://localhost/v4
+    url: https://localhost:8080/v4
     token: 6041d27f3348ee0cefb423b6b53ae1629c5349a1
 
 webscraper:
