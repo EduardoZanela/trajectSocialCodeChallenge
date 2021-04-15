@@ -1,15 +1,23 @@
 pipeline {
   agent any
-  
+  tools {
+      maven 'apache-maven-3.6.3'
+      jdk 'openjdk-11'
+  }
+
   stages {
     stage("build") {
       steps {
-        echo 'building the aplication...'
+        script {
+            def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
+            echo version
+        }
+        sh "mvn install -DskipTests=true"
       }
     }
     stage("test") {
       steps {
-        echo 'testing the aplication...'
+        sh "mvn test"
       }
     }
     stage("deploy") {

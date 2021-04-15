@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: trajectSocialCodeChallenge
+  main:
+    allow-bean-definition-overriding: true
+  flyway:
+    enabled: false
+    baseline-on-migrate: false
+  datasource:
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+  
+server:
+  port: 8080
+  
+client:
+  bitly:
+    url: https://localhost/v4
+    token: 6041d27f3348ee0cefb423b6b53ae1629c5349a1
+
+webscraper:
+  timeout: 10000
+  searchtags: h1,h2,h3
