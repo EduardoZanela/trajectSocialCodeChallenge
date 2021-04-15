@@ -10,4 +10,4 @@ For documentation, a swaggerui library was used, which can be accessed through t
 
 - Access the application main folder and execute the command ./mvnw spring-boot:run if linux, mvnw.cmd spring-boot:run if windows
 
-- Access the application folder /src/main/resources/public/app and execute the command npm start for front end start
+- Access the application folder /src/main/resources/public/app and execute the command npm start for front end startt
