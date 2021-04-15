@@ -37,7 +37,7 @@ pipeline {
     stage("Deploy DEV") {
       when { 
         allOf {
-          expression {jenkins.isBuildAReplay()} 
+          expression {isBuildAReplay()} 
           triggeredBy 'UserIdCause'
         }
       }
