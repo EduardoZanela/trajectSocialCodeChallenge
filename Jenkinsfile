@@ -5,7 +5,7 @@ pipeline {
       jdk 'openjdk-11'
   }
   stages {
-    stage("build") {
+    stage("Building Application") {
       steps {
         script {
             def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
@@ -14,14 +14,25 @@ pipeline {
         sh "mvn install -DskipTests=true"
       }
     }
-    stage("test") {
+    stage("Running Unit Tests") {
       steps {
         sh "mvn test"
       }
     }
-    stage("deploy") {
+    stage("SonarQube Analysis") {
       steps {
         echo 'deploying the aplication...'
+      }
+    }
+    stage("Build/Push Docker Image AWS ECR") {
+      steps {
+        echo 'Build/Push Docker Image ECR...'
+      }
+    }
+    stage("Deploy DEV") {
+      when {triggeredBy 'UserIdCause'}
+      steps {
+        echo 'Deploying DEV'
       }
     }
   }
