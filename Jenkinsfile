@@ -1,5 +1,4 @@
 def isBuildAReplay() {
-  // https://stackoverflow.com/questions/51555910/how-to-know-inside-jenkinsfile-script-that-current-build-is-an-replay/52302879#52302879
   def replyClassName = "org.jenkinsci.plugins.workflow.cps.replay.ReplayCause"
   !currentBuild.rawBuild.getCauses().any{ cause -> cause.toString().contains(replyClassName) }
 }
@@ -21,15 +20,6 @@ pipeline {
   stages {
     stage("Building Application") {
       steps {
-        script {
-            def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
-            echo version
-            echo env.CHANGE_BRANCH
-            echo env.CHANGE_TARGET
-            echo env.CHANGE_ID
-            
-            sh 'printenv'
-        }
         sh "mvn install -DskipTests=true"
       }
     }
@@ -47,7 +37,7 @@ pipeline {
         }
       }
     }
-    stage('Sonar scan result check') {
+    stage('SonarQube Quality Gate') {
         steps {
             timeout(time: 2, unit: 'MINUTES') {
                 retry(3) {
@@ -64,17 +54,6 @@ pipeline {
     stage("Build/Push Docker Image AWS ECR") {
       steps {
         echo 'Build/Push Docker Image ECR...'
-        script {
-            def causes = currentBuild.rawBuild.getCauses()
-            println "Root cause : " + currentBuild.toString()
-            for(cause in causes) {
-                if (cause.class.toString().contains("UpstreamCause")) {
-                    println "This job was caused by job " + cause.upstreamProject
-                } else {
-                    println "Root cause : " + cause.toString()
-                }
-            }
-        }    
       }
     }
     stage("Deploy DEV") {
@@ -110,3 +89,37 @@ pipeline {
 }
 //allOf { triggeredBy 'UserIdCause'}
 //anyOf/allOf/not
+/*
+ script {
+            def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
+            echo version
+            echo env.CHANGE_BRANCH
+            echo env.CHANGE_TARGET
+            echo env.CHANGE_ID
+            
+            sh 'printenv'
+        }
+        script {
+            def causes = currentBuild.rawBuild.getCauses()
+            println "Root cause : " + currentBuild.toString()
+            for(cause in causes) {
+                if (cause.class.toString().contains("UpstreamCause")) {
+                    println "This job was caused by job " + cause.upstreamProject
+                } else {
+                    println "Root cause : " + cause.toString()
+                }
+            }
+        }    
+        withCredentials([usernamePassword(credentials 'credential-id')])
+
+        parameters {
+          string(name: 'AA', defaultValue: '', description: '')
+          choice(name: 'AA', choices: ['1', '2'], description: '')
+          booleanParam(name: 'AA', defaultValue: '', description: '')
+        }
+        to use param -> params.AA
+
+        scrip {
+          def gf = load 'file.groovy'
+        }
+*/
