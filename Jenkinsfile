@@ -5,7 +5,8 @@ def isBuildAReplay() {
 }
 def isDeployDevCommit(){
   def message = sh(returnStdout: true, script: 'git log --format=format:%s -1 ${GIT_COMMIT}')
-  message.contains('#deploydev')
+  def changeId = env.CHANGE_ID
+  message.contains('#deploydev') && changeId?.trim()
 }
 pipeline {
   agent any
