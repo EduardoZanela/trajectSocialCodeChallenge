@@ -8,7 +8,7 @@ def isDeployDevCommit(){
   def changeId = env.CHANGE_ID
   message.contains('#deploydev') &&  !isPullRequest()
 }
-def isPullReques(){
+def isPullRequest(){
   def changeId = env.CHANGE_ID
   changeId?.trim()
 }
