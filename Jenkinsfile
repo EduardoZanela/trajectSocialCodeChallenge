@@ -4,6 +4,10 @@ def isBuildAReplay() {
   def replyClassName = "org.jenkinsci.plugins.workflow.cps.replay.ReplayCause"
   !currentBuild.rawBuild.getCauses().any{ cause -> cause.toString().contains(replyClassName) }
 }
+def isDeployDevCommit(){
+  def message = sh 'git log --format=format:%s -1 ${GIT_COMMIT}'
+  message.contains('#deploydev')
+}
 pipeline {
   agent any
   tools {
@@ -19,7 +23,7 @@ pipeline {
             echo env.CHANGE_BRANCH
             echo env.CHANGE_TARGET
             echo env.CHANGE_ID
-            sh 'git log --format=format:%s -1 ${GIT_COMMIT}'
+            
             sh 'printenv'
         }
         sh "mvn install -DskipTests=true"
@@ -52,16 +56,11 @@ pipeline {
       }
     }
     stage("Deploy DEV") {
-      when { 
-        allOf {
-
-          expression {isBuildAReplay()} 
-          triggeredBy 'UserIdCause'
-        }
-      }
+      when {expression {isDeployDevCommit()}}
       steps {
         echo 'Deploying DEV'
       }
     }
   }
 }
+//allOf { triggeredBy 'UserIdCause'}
