@@ -32,11 +32,23 @@ pipeline {
     stage("Build/Push Docker Image AWS ECR") {
       steps {
         echo 'Build/Push Docker Image ECR...'
+        script {
+            def causes = currentBuild.rawBuild.getCauses()
+            println "Root cause : " + currentBuild.toString()
+            for(cause in causes) {
+                if (cause.class.toString().contains("UpstreamCause")) {
+                    println "This job was caused by job " + cause.upstreamProject
+                } else {
+                    println "Root cause : " + cause.toString()
+                }
+            }
+        }    
       }
     }
     stage("Deploy DEV") {
       when { 
         allOf {
+
           expression {isBuildAReplay()} 
           triggeredBy 'UserIdCause'
         }
