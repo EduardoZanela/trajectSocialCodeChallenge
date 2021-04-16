@@ -5,7 +5,7 @@ def isBuildAReplay() {
   !currentBuild.rawBuild.getCauses().any{ cause -> cause.toString().contains(replyClassName) }
 }
 def isDeployDevCommit(){
-  def message = sh 'git log --format=format:%s -1 ${GIT_COMMIT}'
+  def message = sh(returnStdout: true, script: 'git log --format=format:%s -1 ${GIT_COMMIT}')
   message.contains('#deploydev')
 }
 pipeline {
