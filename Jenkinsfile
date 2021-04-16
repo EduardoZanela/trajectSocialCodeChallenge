@@ -40,8 +40,26 @@ pipeline {
     }
     stage("SonarQube Analysis") {
       steps {
-        echo 'deploying the aplication...'
+        script {
+          withSonarQubeEnv {
+            sh 'mvn verify sonar:sonar -DskipTests=true -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true'
+          }
+        }
       }
+    }
+    stage('Sonar scan result check') {
+        steps {
+            timeout(time: 2, unit: 'MINUTES') {
+                retry(3) {
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
     }
     stage("Build/Push Docker Image AWS ECR") {
       steps {
@@ -65,6 +83,12 @@ pipeline {
         echo 'Deploying DEV'
       }
     }
+    stage("Deploy TEST") {
+      when {expression {isPullRequest()}}
+      steps {
+        echo 'Deploying TEST'
+      }
+    }
     stage("Deploy PROD") {
       when {branch 'main'}
       steps {
@@ -72,5 +96,17 @@ pipeline {
       }
     }
   }
+  post {
+    always {
+      echo 'always'
+    }
+    failure {
+      echo 'failure'
+    }
+    success {
+      echo 'sucess'
+    }
+  }
 }
 //allOf { triggeredBy 'UserIdCause'}
+//anyOf/allOf/not
