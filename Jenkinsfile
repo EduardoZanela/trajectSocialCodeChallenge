@@ -4,9 +4,13 @@ def isBuildAReplay() {
   !currentBuild.rawBuild.getCauses().any{ cause -> cause.toString().contains(replyClassName) }
 }
 def isDeployDevCommit(){
-  def message = sh(returnStdout: true, script: 'git log --format=format:%s -1 ${GIT_COMMIT}')
+  def message = sh(returnStdout: true, script: 'git log --format=format:"%s %b" -1 ${GIT_COMMIT}')
   def changeId = env.CHANGE_ID
-  message.contains('#deploydev') && changeId?.trim()
+  message.contains('#deploydev') &&  !isPullRequest()
+}
+def isPullReques(){
+  def changeId = env.CHANGE_ID
+  changeId?.trim()
 }
 pipeline {
   agent any
@@ -60,6 +64,14 @@ pipeline {
       steps {
         echo 'Deploying DEV'
       }
+    }
+    stage("Deploy PROD") {
+      when {
+        branch 'main'
+      }
+    }
+    steps {
+        echo 'Deploying PROD'
     }
   }
 }
