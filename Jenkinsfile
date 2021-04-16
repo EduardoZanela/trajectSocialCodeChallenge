@@ -19,7 +19,7 @@ pipeline {
             echo env.CHANGE_BRANCH
             echo env.CHANGE_TARGET
             echo env.CHANGE_ID
-            echo env.GIT_COMMIT_MSG
+            git log --format=format:%s -1 ${GIT_COMMIT}
             sh 'printenv'
         }
         sh "mvn install -DskipTests=true"
