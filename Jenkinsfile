@@ -19,6 +19,7 @@ pipeline {
             echo env.CHANGE_BRANCH
             echo env.CHANGE_TARGET
             echo env.CHANGE_ID
+            sh 'printenv'
         }
         sh "mvn install -DskipTests=true"
       }
