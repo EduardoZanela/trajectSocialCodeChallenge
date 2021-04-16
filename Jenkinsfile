@@ -66,12 +66,10 @@ pipeline {
       }
     }
     stage("Deploy PROD") {
-      when {
-        branch 'main'
-      }
-    }
-    steps {
+      when {branch 'main'}
+      steps {
         echo 'Deploying PROD'
+      }
     }
   }
 }
