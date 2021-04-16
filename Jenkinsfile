@@ -1,5 +1,5 @@
 def isBuildAReplay() {
-  
+
   // https://stackoverflow.com/questions/51555910/how-to-know-inside-jenkinsfile-script-that-current-build-is-an-replay/52302879#52302879
   def replyClassName = "org.jenkinsci.plugins.workflow.cps.replay.ReplayCause"
   !currentBuild.rawBuild.getCauses().any{ cause -> cause.toString().contains(replyClassName) }
@@ -16,6 +16,9 @@ pipeline {
         script {
             def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
             echo version
+            echo env.CHANGE_BRANCH
+            echo env.CHANGE_TARGET
+            echo env.CHANGE_ID
         }
         sh "mvn install -DskipTests=true"
       }
