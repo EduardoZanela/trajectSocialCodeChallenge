@@ -19,7 +19,7 @@
 		<docker.image.prefix>eduardozanela</docker.image.prefix>
 		<dockerfile-plugin.version>1.4.13</dockerfile-plugin.version>
 		<dockerfile-plugin.image-tag>latest</dockerfile-plugin.image-tag>
-		<jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
