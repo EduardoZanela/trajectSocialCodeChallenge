@@ -16,11 +16,12 @@ pipeline {
   tools {
       maven 'apache-maven-3.6.3'
       jdk 'openjdk-11'
+      docker 'docker'
   }
   stages {
     stage("Building Application") {
       steps {
-        sh "mvn install -DskipTests=true"
+        sh "mvn clean install -DskipTests=true"
       }
     }
     stage("Running Unit Tests") {
@@ -53,7 +54,11 @@ pipeline {
     }
     stage("Build/Push Docker Image AWS ECR") {
       steps {
-        echo 'Build/Push Docker Image ECR...'
+        script {
+          def imagetag = env.GIT_BRANCH + '.' + env.BUILD_NUMBER
+          sh 'mvn dockerfile:build -Ddockerfile-plugin.image-tag=${imagetag}'
+          sh 'mvn dockerfile:push -Ddockerfile-plugin.image-tag=${imagetag}'
+        }
       }
     }
     stage("Deploy DEV") {
