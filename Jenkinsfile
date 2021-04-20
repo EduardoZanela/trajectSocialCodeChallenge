@@ -54,8 +54,11 @@ pipeline {
       steps {
         script {
           def imagetag = env.GIT_BRANCH + '.' + env.BUILD_NUMBER
-          sh 'mvn docker:build -Ddockerfile-plugin.image-tag=${imagetag}'
-          //sh 'mvn dockerfile:push -Ddockerfile-plugin.image-tag=${imagetag}'
+          withCredentials([usernamePassword(credentialsId: 'docker_login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            sh 'docker login -u $USERNAME -p $PASSWORD'
+            sh 'mvn docker:build -Ddockerfile-plugin.image-tag=${imagetag}'            
+            sh 'mvn docker:push -Ddockerfile-plugin.image-tag=${imagetag}'
+          }
         }
       }
     }
