@@ -55,8 +55,8 @@ pipeline {
       steps {
         script {
           def imagetag = env.GIT_BRANCH + '.' + env.BUILD_NUMBER
-          sh 'mvn dockerfile:build -Ddockerfile-plugin.image-tag=${imagetag}'
-          sh 'mvn dockerfile:push -Ddockerfile-plugin.image-tag=${imagetag}'
+          sh 'mvn docker:build -Ddockerfile-plugin.image-tag=${imagetag}'
+          //sh 'mvn dockerfile:push -Ddockerfile-plugin.image-tag=${imagetag}'
         }
       }
     }
