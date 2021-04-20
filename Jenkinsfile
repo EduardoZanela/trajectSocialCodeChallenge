@@ -34,7 +34,7 @@ pipeline {
       steps {
         script {
           withSonarQubeEnv {
-            sh 'mvn verify sonar:sonar -DskipTests=true -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true'
+            sh "mvn verify sonar:sonar -DskipTests=true -Dintegration-tests.skip=true -Dmaven.test.failure.ignore=true"
           }
         }
       }
@@ -61,8 +61,8 @@ pipeline {
             def imagetag = env.GIT_BRANCH + '.' + env.BUILD_NUMBER
             echo imagetag
             //sh 'docker login -u $USERNAME -p $PASSWORD'
-            sh 'mvn docker:build -Ddocker.image.tag=${imagetag} -Ddocker.auth.user=$USERNAME -Ddocker.auth.pass=$PASSWORD'            
-            sh 'mvn docker:push -Ddocker.image.tag=${imagetag} -Ddocker.auth.user=$USERNAME -Ddocker.auth.pass=$PASSWORD'
+            sh "mvn docker:build -Ddocker.image.tag=$imagetag -Ddocker.auth.user=$USERNAME -Ddocker.auth.pass=$PASSWORD"          
+            sh "mvn docker:push -Ddocker.image.tag=$imagetag -Ddocker.auth.user=$USERNAME -Ddocker.auth.pass=$PASSWORD"
           }
         }
       }
