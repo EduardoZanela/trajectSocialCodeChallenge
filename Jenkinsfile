@@ -11,6 +11,9 @@ def isPullRequest(){
   def changeId = env.CHANGE_ID
   changeId?.trim()
 }
+def isForDeploy(){
+  isPullRequest() || isDeployDevCommit() || env.GIT_BRANCH == 'main'
+}
 pipeline {
   agent any
   tools {
@@ -51,13 +54,15 @@ pipeline {
         }
     }
     stage("Build/Push Docker Image AWS ECR") {
+      when {expression {isForDeploy()}}
       steps {
         script {
-          def imagetag = env.GIT_BRANCH + '.' + env.BUILD_NUMBER
           withCredentials([usernamePassword(credentialsId: 'docker_login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh 'docker login -u $USERNAME -p $PASSWORD'
-            sh 'mvn docker:build -Ddockerfile-plugin.image-tag=${imagetag}'            
-            sh 'mvn docker:push -Ddockerfile-plugin.image-tag=${imagetag}'
+            def imagetag = env.GIT_BRANCH + '.' + env.BUILD_NUMBER
+            echo imagetag
+            //sh 'docker login -u $USERNAME -p $PASSWORD'
+            sh 'mvn docker:build -Ddocker.image.tag=${imagetag} -Ddocker.auth.user=$USERNAME -Ddocker.auth.pass=$PASSWORD'            
+            sh 'mvn docker:push -Ddocker.image.tag=${imagetag} -Ddocker.auth.user=$USERNAME -Ddocker.auth.pass=$PASSWORD'
           }
         }
       }
